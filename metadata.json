@@ -1,0 +1,6 @@
+{
+  "name": "Hermes Launchpad - Status & URL Dashboard",
+  "description": "Panel de control para alojar URLs y programas con monitoreo de estado en tiempo real, anillos de salud, base de datos SQLite y agente IA Hermes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

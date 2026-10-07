@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  hermes-launchpad:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hermes-launchpad
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Directorio y ruta de la base de datos SQLite persistente
+      - DATA_DIR=/app/data
+      - DATABASE_PATH=/app/data/dashboard.sqlite
+      # Credenciales de inicio de sesión
+      - ADMIN_USERNAME=${ADMIN_USERNAME:-admin}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      # Habilitar o deshabilitar botón de modo demo (true o false)
+      - ALLOW_DEMO=${ALLOW_DEMO:-true}
+      # Iniciar con tablas vacías en SQLite (false) o con demos (true)
+      - SEED_DEMO_DATA=${SEED_DEMO_DATA:-false}
+      # Clave de Gemini para Hermes Agent (opcional)
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      # Usuarios adicionales en formato usuario:clave separados por coma
+      - ADDITIONAL_USERS=${ADDITIONAL_USERS:-}
+    volumes:
+      # Volumen persistente para que la base de datos SQLite no se borre en reinicios o despliegues
+      - sqlite_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/stats"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  # Volumen persistente Docker
+  sqlite_data:
+    driver: local
